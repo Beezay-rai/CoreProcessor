@@ -1,0 +1,57 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<div class="container">
+@*     <div class="col-md-6">
+        <input class="form-control" id="conn" />
+        <button type="button" onclick="sendMessage()" class="btn btn-sm btn-success">Start</button>
+        <button type="button"  class="btn btn-sm  btn-danger">Close</button>
+    </div> *@
+    <div class="row">
+        <div class="col-md-6">
+            <input class="form-control" id="message" />
+            <button type="button" onclick="sendMessage()" class="btn btn-primary">Send</button>
+        </div>
+        <div class="col-md-6">
+            <ul class="control-label" id="discussion">
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js" integrity="sha512-7SRCYIJtR6F8ocwW7UxW6wGKqbSyqREDbfCORCbGLatU0iugBLwyOXpzhkPyHIFdBO0K2VCu57fvP2Twgx1o2A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7245/chathub", {
+        headers: {
+            "Authorization": "Basic QmlqYXk6cGFzc3dvcmQ="
+        }
+    }).build();
+    // var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7065/chathub").build();
+
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    connection.on("ReceiveMessage", function (data) {
+        debugger;
+        var messageList = document.getElementById("discussion");
+        var newMessage = document.createElement("li");
+        newMessage.textContent = data;
+        messageList.appendChild(newMessage);
+    });
+
+    function sendMessage() {
+        var message = document.getElementById("message").value;
+        connection.invoke("SendMessage", message).catch(err => console.error(err.toString()));
+    }
+</script>

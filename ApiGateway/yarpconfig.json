@@ -1,0 +1,24 @@
+﻿{
+  "ReverseProxy": {
+    "Routes": {
+      "signalr-route": {
+        "ClusterId": "signalr-cluster",
+        "TimeoutPolicy": "customPolicy",
+        "Match": {
+          "Path": "/chathub/{**catch-all}"
+        }
+      }
+    },
+    "Clusters": {
+      "signalr-cluster": {
+
+        "Destinations": {
+          "destination1": {
+            "Address": "https://localhost:7065"
+          }
+
+        }
+      }
+    }
+  }
+}
